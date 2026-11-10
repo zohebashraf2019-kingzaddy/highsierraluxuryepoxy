@@ -16,6 +16,14 @@ toggle.addEventListener('click', () => {
 });
 links.addEventListener('click', (e) => { if (e.target.closest('a')) { toggle.setAttribute('aria-expanded', 'false'); links.classList.remove('open'); } });
 
+// Logo: always scroll to the very top of the page (the #top header is sticky, so a plain anchor jump stops short)
+$$('a[href="#top"]').forEach((a) => a.addEventListener('click', (e) => {
+  e.preventDefault();
+  toggle.setAttribute('aria-expanded', 'false'); links.classList.remove('open');
+  window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  history.replaceState(null, '', location.pathname + location.search);
+}));
+
 /* reveal on scroll */
 const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
 $$('.reveal').forEach((el) => io.observe(el));
